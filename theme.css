@@ -1,0 +1,21 @@
+#menu td{
+	border:solid red;
+	width:120px;
+}
+
+#menu a:visited,
+#menu a:link
+{
+	color:black;
+}
+
+
+
+
+#signin td{
+	text-align:center;
+}
+
+#signin {
+	text-align:center;
+}
