@@ -39,13 +39,18 @@ try {
 	$rs = pg_query($con, $q);
 	$rs = pg_fetch_all($rs);
 
-	if (isset($con)) pg_close($con);
+	$q = "select user_id from useraccount where email = '$email' and password='$password';";
+	$rs = pg_query($con, $q);
+	$rs = pg_fetch_all($rs);
+	if ($rs === false) throw new Exception("can not sign in");
 
-	$_SESSION['user'] = $email;
+	$_SESSION['email'] = $email;
+	$_SESSION['user_id'] = $rs[0]["user_id"];
+
 
 	//echo 'Debug: you has been registered succussefully!<br>';
 	//echo 'Debug: <a href="browse.php">Go</a><br>';
-	header('Location: browse.php');
+	header('Location: list_boards.php');
 } catch (Exception $e) {
 	$eurl = "error.php?message=".urlencode($e->getMessage());
 	$eurl .= "&to=".urlencode("register.php");

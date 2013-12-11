@@ -4,13 +4,13 @@
 class DBC {
 	public $con = NULL;
 	function __construct() {
-		$host="localhost";
-	    $user="jlsong";
-	    $pass="jlsongpg";
-	    $port="5432";
+		$dbhost="localhost";
+	    $dbuser="jlsong";
+	    $dbpass="jlsong";
+	    $dbport="5432";
 	    $dbname="dbproject";
 
-		$this->con = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
+		$this->con = pg_connect("host=$dbhost port=$dbport dbname=$dbname user=$dbuser password=$dbpass");
 
 		if ($this->con === false) {
 			unset($this->con);
@@ -20,14 +20,14 @@ class DBC {
 		// user dbo schema
 		pg_query($this->con, "set search_path to 'dbo';");
 
-		echo "Debug: connected to database.<br>";
+		//echo "Debug: connected to database.<br>";
 	}
 
 	function __destruct(){
 		if (isset($this->con)) {
 			pg_close($this->con);
 		}
-		echo "Debug: disconnected from database<br>";
+		//echo "Debug: disconnected from database<br>";
 	}
 }
 

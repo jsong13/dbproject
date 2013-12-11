@@ -1,4 +1,5 @@
-﻿drop schema if exists dbo cascade;
+﻿\c dbproject
+drop schema if exists dbo cascade;
 create schema dbo;
 set search_path to 'dbo';
 

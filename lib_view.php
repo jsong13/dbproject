@@ -24,15 +24,16 @@
 <td> <a href="browse.php">Browse</a>
 <td> My Profile
 <td> Social 
-<td> My Boards 
+<td> <a href="list_boards.php">My Boards </a>
+
 <td> My Pins 
 <td> Search
 <td> My Streams 
 <td> Recommends
 <td>
 <?php
-	$email = $_SESSION['user'];
-	if (empty($email)) {
+	$user_id = $_SESSION['user_id'];
+	if (empty($user_id)) {
 		echo "<a href=\"index.php\">Sign in</a>";
 	} else {
 		echo "<a href=\"signout.php\">Sign out</a>";
