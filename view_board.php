@@ -10,6 +10,16 @@
 	$pinboard_id = $_GET["pinboard_id"];
 	
 
+	// add pin
+?>
+
+	<form method="post" action="add_pin.php">
+		add pin from web <input type="text" name="source_url">
+		<input type="submit" value="add">
+		<input type="hidden" name="pinboard_id" value="<?php echo $pinboard_id; ?>">
+	</form>
+
+<?php
 
 
 	try{
@@ -26,14 +36,13 @@
 
 
 		$rs = pg_query($con, 
-		"select * from pin 
-			where pinboard_id=$pinboard_id and 
-			user_id = $user_id ; ");
+			"select * from pin inner join picture on pin.picture_id = picture.picture_id
+				where pin.pinboard_id=$pinboard_id ; ");
+
 
 		while ($row = pg_fetch_assoc($rs)) {
-			$pin_id=$row['pin_id'];
-			echo "<br>";
-			echo $pin_id;
+			//$pin_id=$row['pin_id'];
+			echo '<img src="' . $row['url'] . '"/>';
 		}
 
 	} catch (Exception $e) {
