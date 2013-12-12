@@ -20,8 +20,8 @@ try {
 		$filenameIn  = $source_url;
 		$parts = pathinfo($source_url);
 
-		$relname = '/images/' . $parts["filename"] .".". date("ywdhms") .".". $parts["extension"] ;
-		$filenameOut = __DIR__ . $relname;
+		$relname = 'images/' . $parts["filename"] .".". date("ywdhms") .".". $parts["extension"] ;
+		$filenameOut = __DIR__ ."/". $relname;
 
 		$contentOrFalseOnFailure  = file_get_contents($filenameIn);
 		if ($contentOrFalseOnFailure === false) {

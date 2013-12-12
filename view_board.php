@@ -10,15 +10,20 @@
 	$pinboard_id = $_GET["pinboard_id"];
 	
 
-	// add pin
 ?>
-
 	<form method="post" action="add_pin.php">
 		add pin from web <input type="text" name="source_url">
 		<input type="submit" value="add">
 		<input type="hidden" name="pinboard_id" value="<?php echo $pinboard_id; ?>">
 	</form>
 
+	<form method="post" action="upload_pin.php"
+		enctype="multipart/form-data">
+		<label for="file">Picture File:</label>
+		<input type="file" name="file">
+		<input type="submit" value="submit">
+		<input type="hidden" name="pinboard_id" value="<?php echo $pinboard_id ;?>">
+	</form>
 <?php
 
 
@@ -41,8 +46,9 @@
 
 
 		while ($row = pg_fetch_assoc($rs)) {
-			//$pin_id=$row['pin_id'];
-			echo '<img src="' . $row['url'] . '"/>';
+			$pin_id=$row['pin_id'];
+			//echo '<img src="' . $row['url'] . '"/>';
+			display_pin($pin_id);
 		}
 
 	} catch (Exception $e) {
