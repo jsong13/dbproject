@@ -1,8 +1,9 @@
 <?php
+session_start();
 class DBC {
 	public $con;
 	function __construct(){
-		$dbuser = jlsong;
+		$dbuser = 'jlsong';
 		$dbpassword = $dbuser;
 		$this->con = pg_connect("host=localhost port=5432 dbname=dbproject user=$dbuser password=$dbpassword");
 		if ($this->con === false) {
