@@ -38,10 +38,14 @@
 <td>
 <?php
 	$user_id = $_SESSION['user_id'];
-	if (empty($user_id)) {
+	if (!isset($user_id)) {
 		echo "<a href=\"index.php\">Sign in</a>";
 	} else {
-		echo "<a href=\"signout.php\">Sign out</a>";
+		$dbc = new DBC();
+		$con = $dbc->con;
+
+		$rs = pg_query("select * from useraccount where user_id=$user_id;");
+		echo "<a href=\"signout.php\">Sign out</a> " . pg_fetch_all($rs)[0]["username"];
 	}
 ?>
 </table>
@@ -49,7 +53,7 @@
 <?php } ?>
 
 
-<?php function display_pin($pin_id) { 
+<?php function display_pin($pin_id, $backto='browse.php') { 
 	$dbc = new DBC();
 	$con = $dbc->con;
 	$rs = pg_query($con, 
@@ -59,12 +63,20 @@
 	$row=$rs[0];
 	$url = $row['url'];
 	$picture_id=$row['picture_id'];
+	$user_id = $_SESSION["user_id"];
 
 	$rs = pg_query($con, 
 		"select count(user_id) as c from likepicture 
 			where picture_id = $picture_id ;");
 	$counts = pg_fetch_all($rs)[0]['c'];
 	
+	$rs = pg_query($con, 
+		"select count(comment_id) as c from comments
+			where comments.pin_id=$pin_id ; ");
+	$totalcomments = pg_fetch_all($rs)[0]['c'];
+
+
+
 	$rs = pg_query($con, 
 		"select * from pin inner join useraccount on pin.user_id = useraccount.user_id
 			where pin.pin_id=$pin_id ; ");
@@ -76,7 +88,16 @@
 	$pinboard_name = pg_fetch_all($rs)[0]["pinboard_name"];
 	$pinboard_id = pg_fetch_all($rs)[0]["pinboard_id"];
 
+	$rs = pg_query($con, "select * from likepicture, pin 
+		where pin.picture_id = likepicture.picture_id 
+		and pin.pin_id = $pin_id and likepicture.user_id=$user_id; ");
+	$rs = pg_fetch_all($rs);
 
+	if ($rs == false) {
+		$like = false;
+	} else {
+		$like = true;
+	}
 ?>
 	<div align="center" width="50%">
 	<table border="1">
@@ -95,18 +116,34 @@
 	from <a href="view_board.php?pinboard_id=<?php echo $pinboard_id;?>"><?php echo $pinboard_name;?></a>
 
 
+
 	<form action="repin.php" method="post">
 		<input type="submit" value="repin"/>
+		<input type="hidden" name="backto" value="<?php echo $backto;?>"/>
 	</form>
 
 	<form action="delete_pin.php" method="post">
 		<input type="submit" value="Delete"/>
 		<input type="hidden" name="pin_id" value=<?php echo $pin_id; ?>>
+		<input type="hidden" name="backto" value="<?php echo $backto;?>"/>
 	</form>
+
 	<form action="like_pin.php" method="post">
-		<input type="submit" value="Like/Dislike"/>
+		<input type="hidden" name="backto" value="<?php echo $backto;?>"/>
+		<input type="hidden" name="picture_id" value="<?php echo $picture_id ;?>">
+		<input type="hidden" name="pin_id" value="<?php echo $pin_id ;?>">
+		<?php if (!$like) {?>
+		<input type="submit" value="like"/>
+		<?php } else {?>
+		<input type="submit" value="unlike"/>
+		<?php } ?>
+		
 	</form>
-	Likes: <?php echo $counts ;?>
+
+	<?php echo $counts ;?> likes
+	<br>
+	<?php echo $totalcomments; ;?> comments
+
 	</table>
 	</div>
 <?php
