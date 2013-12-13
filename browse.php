@@ -14,7 +14,7 @@
 		order by pin.time desc;");
 
 	while($row = pg_fetch_assoc($rs)) {
-		display_pin($row["pin_id"]);
+		display_pin($row["pin_id"], "browse.php");
 	}
 	
 
