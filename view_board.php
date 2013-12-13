@@ -42,13 +42,14 @@
 
 		$rs = pg_query($con, 
 			"select * from pin inner join picture on pin.picture_id = picture.picture_id
-				where pin.pinboard_id=$pinboard_id ; ");
+			where pin.pinboard_id=$pinboard_id 
+			order by pin.time desc; ");
 
 
 		while ($row = pg_fetch_assoc($rs)) {
 			$pin_id=$row['pin_id'];
 			//echo '<img src="' . $row['url'] . '"/>';
-			display_pin($pin_id);
+			display_pin($pin_id, "view_board.php?pinboard_id=$pinboard_id");
 		}
 
 	} catch (Exception $e) {
