@@ -47,10 +47,9 @@ try {
 	$_SESSION['email'] = $email;
 	$_SESSION['user_id'] = $rs[0]["user_id"];
 
-
 	//echo 'Debug: you has been registered succussefully!<br>';
 	//echo 'Debug: <a href="browse.php">Go</a><br>';
-	header('Location: list_boards.php');
+	header('Location: browse.php');
 } catch (Exception $e) {
 	$eurl = "error.php?message=".urlencode($e->getMessage());
 	$eurl .= "&to=".urlencode("register.php");
