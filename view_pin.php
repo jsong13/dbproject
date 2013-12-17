@@ -9,14 +9,23 @@
 	$user_id = $_SESSION["user_id"];
 	$pin_id = $_GET["pin_id"];
 
-	echo '<div align="center">';
-	display_pin($pin_id, "view_pin.php?pin_id=$pin_id");
 
-	echo "<h2>Comments</h2>";
-	
+
 	try{
 		$dbc = new DBC();
 		$con = $dbc->con;
+
+		// test if the pin exsits
+		$rs = pg_query($con, "select * from pin where pin_id = $pin_id;");
+		$rs = pg_fetch_all($rs);
+		if ($rs == false) {
+			throw new Exception("pin $pin_id does not exist");
+		}
+
+		echo '<div align="center">';
+		display_pin($pin_id, "view_pin.php?pin_id=$pin_id");
+		echo "<h2>Comments</h2>";
+
 		$rs = pg_query($con, "select 
 			u.username as username ,
 		  	c.body as body,
@@ -54,7 +63,7 @@
 
 	} catch (Exception $e) {
 		$eurl = "error.php?message=".urlencode($e->getMessage());
-		$eurl .= "&to=".urlencode("register.php");
+		$eurl .= "&to=".urlencode("browse.php");
 		header("Location: $eurl");
 	}
 

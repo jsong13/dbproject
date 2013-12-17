@@ -8,9 +8,9 @@
 	display_menu();
 	$user_id = $_SESSION["user_id"];
 	$pinboard_id = $_GET["pinboard_id"];
-	
-
 ?>
+
+	<div align="center">
 	<form method="post" action="add_pin.php">
 		add pin from web <input type="text" name="source_url">
 		<input type="submit" value="add">
@@ -24,6 +24,9 @@
 		<input type="submit" value="submit">
 		<input type="hidden" name="pinboard_id" value="<?php echo $pinboard_id ;?>">
 	</form>
+
+	</div>
+
 <?php
 
 
@@ -32,11 +35,26 @@
 		$con = $db->con;
 			
 		$rs = pg_query($con, 
-			"select * from pinboard 
-				where pinboard_id=$pinboard_id ;");
-		echo "board name: ";
-		echo pg_fetch_all($rs)[0]['pinboard_name'];
-		echo "<br>";
+			"select * from pinboard where pinboard_id=$pinboard_id ;");
+		$rs = pg_fetch_all($rs);
+		if ($rs == false) throw new Exception("pinboard $pinboard_id does not exist");
+
+		$pinboard_name = $rs[0]['pinboard_name'];
+		$pinboarduser_id = $rs[0]['user_id'];
+
+		$rs = pg_query($con, "select * from useraccount where user_id=$pinboarduser_id ;");
+		$rs = pg_fetch_all($rs);
+		$pinboard_username = $rs[0]['username'];
+
+
+
+		echo '<hr>';
+		echo '<h1 align="center">';
+		echo $pinboard_name;
+		echo "</h1>";
+		echo '<h2 align="center"> ';
+		echo 'by '. $pinboard_username;
+		echo "</h2>";
 
 
 
@@ -54,10 +72,7 @@
 
 	} catch (Exception $e) {
 		$eurl = "error.php?message=".urlencode($e->getMessage());
-		$eurl .= "&to=".urlencode("register.php");
+		$eurl .= "&to=".urlencode("browse.php");
 		header("Location: $eurl");
 	}
 ?>
-
-
-

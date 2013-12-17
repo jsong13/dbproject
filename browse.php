@@ -16,7 +16,6 @@
 	while($row = pg_fetch_assoc($rs)) {
 		display_pin($row["pin_id"], "browse.php");
 	}
-	
 
 	display_footer();
 ?>

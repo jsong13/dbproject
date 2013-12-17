@@ -117,8 +117,9 @@
 
 
 
-	<form action="repin.php" method="post">
+	<form action="to_repin.php" method="post">
 		<input type="submit" value="repin"/>
+		<input type="hidden" name="pin_id" value="<?php echo $pin_id;?>" />
 		<input type="hidden" name="backto" value="<?php echo $backto;?>"/>
 	</form>
 

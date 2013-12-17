@@ -9,7 +9,6 @@ try {
 	$db = new DBC();
 	$con = $db->con;
 
-
 	$rs = pg_query($con, "select 1 from likepicture, pin 
 		where pin.picture_id = likepicture.picture_id 
 		and pin.pin_id = $pin_id and likepicture.user_id=$user_id; ");
