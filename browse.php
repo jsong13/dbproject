@@ -13,8 +13,10 @@
 	$rs = pg_query($con, "select * from pin join picture on picture.picture_id = pin.picture_id 
 		order by pin.time desc;");
 
+	// todo add anchar to get back
 	while($row = pg_fetch_assoc($rs)) {
-		display_pin($row["pin_id"], "browse.php");
+		$pin_id = $row['pin_id'];
+		display_pin($row["pin_id"], "browse.php#$pin_id");
 	}
 
 	display_footer();

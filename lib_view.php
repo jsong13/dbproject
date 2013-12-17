@@ -76,11 +76,12 @@
 	$totalcomments = pg_fetch_all($rs)[0]['c'];
 
 
-
 	$rs = pg_query($con, 
 		"select * from pin inner join useraccount on pin.user_id = useraccount.user_id
 			where pin.pin_id=$pin_id ; ");
-	$username = pg_fetch_all($rs)[0]["username"];
+	$rs = pg_fetch_all($rs);
+	$username = $rs[0]["username"];
+	$pin_user_id = $rs[0]["user_id"];
 
 	$rs = pg_query($con, 
 		"select * from pin inner join pinboard on pinboard.pinboard_id = pin.pinboard_id
@@ -109,11 +110,17 @@
 	/></a>
 	<td >
 
-	by <?php echo $username ; ?>
+	by 
+<?php 
+	echo "<a href=\"view_user.php?user_id=$pin_user_id\">";
+	echo $username ; 
+	echo '</a>';
+?>
 
 	<br>
 
-	from <a href="view_board.php?pinboard_id=<?php echo $pinboard_id;?>"><?php echo $pinboard_name;?></a>
+	from <a href="view_board.php?pinboard_id=<?php echo $pinboard_id;?>">
+		<?php echo $pinboard_name;?></a>
 
 
 
@@ -149,3 +156,94 @@
 	</div>
 <?php
 } ?>
+
+
+
+<?php 
+function display_user_tr($other_user_id, $backto) {
+	$user_id = $_SESSION["user_id"];
+	$dbc = new DBC();
+	$con = $dbc->con;
+
+	$rs = pg_query($con, "select * from useraccount 
+		where user_id=$other_user_id ;");
+	$rs = pg_fetch_all($rs);
+
+	echo "<tr>";
+
+	if ($rs == false) {
+		echo "user doesn't exist";
+		return;
+	}
+	
+
+	echo "<td>";
+	echo $rs[0]["username"];
+
+	echo "<td>";
+	echo $rs[0]["email"];
+
+	// friendship status 
+	echo "<td>";
+
+	$rs = pg_query($con, "select * from friendship where 
+		( user1_id = $user_id and user2_id = $other_user_id );");
+	$rs1 = pg_fetch_all($rs);
+	
+	$rs = pg_query($con, "select * from friendship where 
+		( user2_id = $user_id and user1_id = $other_user_id );");
+	$rs2 = pg_fetch_all($rs);
+	
+	if (!isset($user_id)) {
+		echo " ";
+	} elseif ($user_id == $other_user_id) {
+		echo "myself";
+	} elseif ($rs1 == false and $rs2 == false) {
+		// nothing, show button that can send invitation
+		echo "<form action=\"friendship.php\" method=\"post\">";	
+		echo "<button type=\"submit\" name=\"send\">send invitation</button>";
+		echo "<input type=\"hidden\" name=\"other_user_id\" value=\"$other_user_id\"/>";
+		echo "<input type=\"hidden\" name=\"backto\" value=\"$backto\"/>";
+		echo "</form>";
+	} elseif ($rs1 != false ) {		
+		if ($rs1[0]['status'] == "ACCEPTED") {
+			echo "<form action=\"friendship.php\" method=\"post\">";	
+			echo "friend";
+			echo "<button type=\"submit\" name=\"unfriend\">unfriend</button>";
+			echo "<input type=\"hidden\" name=\"other_user_id\" value=\"$other_user_id\"/>";
+			echo "<input type=\"hidden\" name=\"backto\" value=\"$backto\"/>";
+			echo "</form>";
+
+		} else /* PENDING */ {
+			// invitation already sent
+			echo "<form action=\"friendship.php\" method=\"post\">";	
+			echo "Sent";
+			echo "<button type=\"submit\" name=\"update\">update</button>";
+			echo "<input type=\"hidden\" name=\"other_user_id\" value=\"$other_user_id\"/>";
+			echo "<input type=\"hidden\" name=\"backto\" value=\"$backto\"/>";
+			echo "</form>";
+		}
+
+	} else /* $rs2 != false */{
+		if ($rs2[0]['status'] == "ACCEPTED") {
+			echo "<form action=\"friendship.php\" method=\"post\">";	
+			echo "friend";
+			echo "<button type=\"submit\" name=\"unfriend\">unfriend</button>";
+			echo "<input type=\"hidden\" name=\"other_user_id\" value=\"$other_user_id\"/>";
+			echo "<input type=\"hidden\" name=\"backto\" value=\"$backto\"/>";
+			echo "</form>";
+
+		} else {
+			// pending for my reply
+			echo "<form action=\"friendship.php\" method=\"post\">";	
+			echo "<button type=\"submit\" name=\"accept\">accept</button>";
+			echo "<button type=\"submit\" name=\"decline\">decline</button>";
+			echo "<input type=\"hidden\" name=\"other_user_id\" value=\"$other_user_id\"/>";
+			echo "<input type=\"hidden\" name=\"backto\" value=\"$backto\"/>";
+			echo "</form>";
+		}
+	}
+	
+
+}
+?>
