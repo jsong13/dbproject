@@ -28,7 +28,7 @@
 <tr>
 <td> <a href="browse.php">Browse</a>
 <td> My Profile
-<td> Social 
+<td> <a href="view_social.php">Social</a> 
 <td> <a href="list_boards.php">My Boards </a>
 
 <td> My Pins 
@@ -245,5 +245,49 @@ function display_user_tr($other_user_id, $backto) {
 	}
 	
 
+}
+
+?>
+
+<?php
+function display_pinboard_tds($pinboard_id, $backto) {
+	$user_id = $_SESSION["user_id"];
+	$dbc = new DBC();
+	$con = $dbc->con;
+
+	$rs = pg_query($con, "select * from pinboard where pinboard_id=$pinboard_id ;");
+	$rs = pg_fetch_all($rs);
+
+	if ($rs == false) {
+		echo "pinboard $pinboard_id doesn't exist";
+		return;
+	}
+	
+	$pinboard_user_id = $rs[0]["user_id"];
+
+	echo "<td>";
+	echo "<a href=view_board.php?pinboard_id=$pinboard_id>";
+	echo $rs[0]['pinboard_name'];	
+	echo "</a>";
+
+	$rs = pg_query($con, "select * from useraccount where user_id=$pinboard_user_id ;");
+	$rs = pg_fetch_all($rs);
+	$pinboard_user_name = $rs[0]["username"];
+
+	echo "<td>";
+	echo "<a href=view_user.php?user_id=$pinboard_user_id>";
+	echo $pinboard_user_name;
+	echo "</a>";
+
+	echo '<td>';
+	if ($rs[0]['friend_comment_only']) {
+		echo "friends only";
+	} else {
+		echo "everyone";
+	}
+
+
+?>
+<?php
 }
 ?>

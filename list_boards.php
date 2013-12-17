@@ -8,40 +8,53 @@
 	display_menu();
 	$user_id = $_SESSION["user_id"];
 ?>
+<hr>
+<div align="center">
 <form action="add_board.php" method="post">
-board name:
+add a board:
 <input type="text" name="pinboard_name">
 <button type="submit" >add</button>
 </form>
-
-<table>
-<tr>
-<th> Boardname
+</div>
+<hr>
 
 <?php
 try {
 	$db = new DBC();
 	$con = $db->con;
-	$rs = pg_query($con, 
-		"select * from pinboard 
-			where user_id=$user_id ; ");
+	$rs = pg_query($con, "select * from pinboard where user_id=$user_id ; ");
+
+	echo '<div align="center">';
+	echo "<table border=\"1\">";
+	echo '<tr>';
+	echo '<th> board name';
+	echo '<th> user';
+	echo '<th> comment';
+	echo '<th> edit';
+	echo '<th> delete';
 
 	while ($row = pg_fetch_assoc($rs)) {
 		$pinboard_id=$row['pinboard_id'];
-		echo "<tr>";
-		echo "<td>";
-		echo "<a href=view_board.php?pinboard_id=$pinboard_id>";
-		echo $row['pinboard_name'];	
-		echo "</a>"
 
-?>
-	<td>
-	<form method="post" action="delete_board.php">
-	<input type="hidden" name="pinboard_id" value="<?php echo $pinboard_id ; ?>">
-		<input type="submit" value="delete">
-	</form>
-<?php
+		echo '<tr>';
+		display_pinboard_tds($pinboard_id, 'list_boards.php');
+
+		echo "<td>";
+		echo '<form method="post" action="edit_board.php">';
+		echo '<input type="hidden" name="pinboard_id" value="'. $pinboard_id . '">';
+		echo '<input type="submit" value="edit">';
+		echo '</form>';
+
+
+		echo "<td>";
+		echo '<form method="post" action="delete_board.php">';
+		echo '<input type="hidden" name="pinboard_id" value="'. $pinboard_id . '">';
+		echo '<input type="submit" value="delete">';
+		echo '</form>';
+
 	}
+	echo "</table>";
+	echo '</div>';
 } catch (Exception $e) {
 	$eurl = "error.php?message=".urlencode($e->getMessage());
 	$eurl .= "&to=".urlencode("register.php");
@@ -49,11 +62,5 @@ try {
 }
 
 
-?>
-</table>
-
-
-
-<?php
 	display_footer();
 ?>

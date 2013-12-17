@@ -7,7 +7,8 @@ $user_id = $_SESSION["user_id"];
 try {
 	$db = new DBC();
 	$con = $db->con;
-	$rs = pg_query($con, "insert into pinboard (pinboard_name, user_id) values ('$pinboard_name', $user_id); ");
+	$rs = pg_query($con, "insert into pinboard (pinboard_name, user_id, friend_comment_only) 
+		values ('$pinboard_name', $user_id, 'FALSE'); ");
 	$rs = pg_fetch_all($rs);
 	header('Location: list_boards.php');
 } catch (Exception $e) {
@@ -15,6 +16,5 @@ try {
 	$eurl .= "&to=".urlencode("register.php");
 	header("Location: $eurl");
 }
-exit();
 
 ?>

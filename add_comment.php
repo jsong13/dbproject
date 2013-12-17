@@ -10,6 +10,7 @@ try {
 	$con = $db->con;
 
 	// todo: check if user_id can make a comment 
+
 	
 	$rs = pg_query($con, 
 		"insert into comments (pin_id, user_id, body)

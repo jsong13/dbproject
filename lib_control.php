@@ -13,7 +13,7 @@ class DBC {
 	}
 	
 	function __destruct(){
-		if ($this->con !== false || !isset($this->con) ) {
+		if ( !isset($this->con) ) {
 			pg_close($this->con);
 		}
 	}
