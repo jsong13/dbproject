@@ -3,7 +3,6 @@ require_once('lib_control.php');
 session_start();
 $pin_id = $_POST['pin_id'];
 $user_id = $_SESSION["user_id"];
-echo $pin_id."<br>";
 
 try {
 	$db = new DBC();
@@ -18,6 +17,8 @@ try {
 	$pinuser_id = $row['pinuser_id'];
 	$picture_id = $row['picture_id'];
 
+	$pinboard_id = get_pin_attrs($pin_id)['pinboard_id'];
+
 	echo $user_id . "<br>";
 	echo $ownerid . '<br>';
 
@@ -31,8 +32,7 @@ try {
 		$rs = pg_query($con, "delete from picture where picture_id=$picture_id; ");
 	}
 
-	$backto = $_POST["backto"];
-	header("Location: $backto");
+	header("Location: view_board.php?pinboard_id=$pinboard_id");
 } catch (Exception $e) {
 	$eurl = "error.php?message=".urlencode($e->getMessage());
 	$eurl .= "&to=".urlencode("browse.php");

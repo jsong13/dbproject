@@ -4,6 +4,7 @@ session_start();
 $user_id = $_SESSION["user_id"];
 $pinboard_id = $_POST['pinboard_id'];
 $source_url=$_POST["source_url"];
+$backto=$_POST['backto'];
 
 try {
 	$db = new DBC();
@@ -46,10 +47,10 @@ try {
 	$rs = pg_query($con, "insert into pin (picture_id, user_id, pinboard_id) values 
 		($picture_id, $user_id, $pinboard_id) ;");
 
-	header("Location: view_board.php?pinboard_id=$pinboard_id");
+	header("Location: $backto");
 } catch (Exception $e) {
 	$eurl = "error.php?message=".urlencode($e->getMessage());
-	$eurl .= "&to=".urlencode("view_board.php?pinboard_id=$pinboard_id");
+	$eurl .= "&to=".urlencode($backto);
 	header("Location: $eurl");
 }
 exit();

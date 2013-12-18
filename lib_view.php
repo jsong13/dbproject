@@ -31,9 +31,9 @@
 <td> <a href="view_social.php">Social</a> 
 <td> <a href="list_boards.php">My Boards </a>
 
-<td> My Pins 
-<td> Search
-<td> My Streams 
+<td> <a href="list_pins.php">My Pins</a> 
+<td> <a href="search.php">Search</a>
+<td> <a href="list_streams.php">My Streams</a>
 <td> Recommends
 <td>
 <?php
@@ -99,6 +99,7 @@
 	} else {
 		$like = true;
 	}
+
 ?>
 	<div align="center" width="50%">
 	<table border="1">
@@ -106,23 +107,22 @@
 	<td align="center" colspan="2">
 	<a href="view_pin.php?pin_id=<?php echo $pin_id ;?>">
 	<img src=" <?php echo $row['url']; ?>" alt="images/default.png"
-		width="400px"
+		width="200px"
 	/></a>
 	<td >
 
-	by 
+	by user
 <?php 
 	echo "<a href=\"view_user.php?user_id=$pin_user_id\">";
 	echo $username ; 
 	echo '</a>';
 ?>
-
+	<br>
+	<?php echo get_pin_attrs($pin_id)['time'];?>
 	<br>
 
-	from <a href="view_board.php?pinboard_id=<?php echo $pinboard_id;?>">
+	in board <a href="view_board.php?pinboard_id=<?php echo $pinboard_id;?>">
 		<?php echo $pinboard_name;?></a>
-
-
 
 	<form action="to_repin.php" method="post">
 		<input type="submit" value="repin"/>
@@ -130,11 +130,19 @@
 		<input type="hidden" name="backto" value="<?php echo $backto;?>"/>
 	</form>
 
-	<form action="delete_pin.php" method="post">
-		<input type="submit" value="Delete"/>
+	<?php if (is_this_my_pin($pin_id, $user_id)) { ?>
+	<form action="to_edit_pin.php" method="post">
+		<input type="submit" value="edit pin"/>
 		<input type="hidden" name="pin_id" value=<?php echo $pin_id; ?>>
 		<input type="hidden" name="backto" value="<?php echo $backto;?>"/>
 	</form>
+
+	<form action="delete_pin.php" method="post">
+		<input type="submit" value="delete pin"/>
+		<input type="hidden" name="pin_id" value=<?php echo $pin_id; ?>>
+		<input type="hidden" name="backto" value="<?php echo $backto;?>"/>
+	</form>
+	<?php } ?>
 
 	<form action="like_pin.php" method="post">
 		<input type="hidden" name="backto" value="<?php echo $backto;?>"/>
@@ -151,11 +159,15 @@
 	<?php echo $counts ;?> likes
 	<br>
 	<?php echo $totalcomments; ;?> comments
+	<hr>
+
+	<?php
+		echo implode(", ", get_pin_tags($pin_id));
+	?>
 
 	</table>
 	</div>
-<?php
-} ?>
+<?php } ?>
 
 
 
@@ -243,10 +255,7 @@ function display_user_tr($other_user_id, $backto) {
 			echo "</form>";
 		}
 	}
-	
-
 }
-
 ?>
 
 <?php
@@ -278,16 +287,50 @@ function display_pinboard_tds($pinboard_id, $backto) {
 	echo "<a href=view_user.php?user_id=$pinboard_user_id>";
 	echo $pinboard_user_name;
 	echo "</a>";
-
 	echo '<td>';
 	if ($rs[0]['friend_comment_only']) {
 		echo "friends only";
 	} else {
 		echo "everyone";
 	}
-
-
-?>
-<?php
+	echo '<td>';
+	echo implode(", ", get_pinboard_tags($pinboard_id));
 }
+
+function display_edit_tags_input($kept_tags) {
+	foreach ($kept_tags as $tag){
+		echo "<input type=\"checkbox\" name=\"kept_tags[]\"";
+		echo " value=\"$tag\" ";
+		echo " checked ";
+		echo ">";
+		echo $tag;
+		echo '</input>';
+		echo '   ';
+	}	
+}
+
+
+function html_input_hidden_string($name, $value) {
+	echo " <input type=\"hidden\"";
+	echo " name=\"$name\" " ;
+	echo " value=\"$value\" />";
+}
+
+function html_input_hidden_int($name, $value) {
+	echo " <input type=\"hidden\"";
+	echo " name=\"$name\"" ;
+	echo " value=$value />";
+}
+
+function display_select_pinboards($my_id){
+	echo '<select name="pinboard_id">';
+	foreach( get_my_pinboards($my_id) as $pinboard_id) {
+		$pinboard_name = get_pinboard_attrs($pinboard_id)['pinboard_name'];
+		echo "<option value=$pinboard_id>" . $pinboard_name . '</option>';
+	}
+	echo "</select>";
+}
+
+
+
 ?>

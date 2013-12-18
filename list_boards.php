@@ -8,6 +8,7 @@
 	display_menu();
 	$user_id = $_SESSION["user_id"];
 ?>
+
 <hr>
 <div align="center">
 <form action="add_board.php" method="post">
@@ -30,6 +31,7 @@ try {
 	echo '<th> board name';
 	echo '<th> user';
 	echo '<th> comment';
+	echo '<th> tags';
 	echo '<th> edit';
 	echo '<th> delete';
 
@@ -40,16 +42,17 @@ try {
 		display_pinboard_tds($pinboard_id, 'list_boards.php');
 
 		echo "<td>";
-		echo '<form method="post" action="edit_board.php">';
-		echo '<input type="hidden" name="pinboard_id" value="'. $pinboard_id . '">';
+		echo '<form method="post" action="to_edit_pinboard.php">';
 		echo '<input type="submit" value="edit">';
+		html_input_hidden_int("pinboard_id", $pinboard_id);
+		html_input_hidden_string("backto", "list_boards.php");
 		echo '</form>';
 
 
 		echo "<td>";
 		echo '<form method="post" action="delete_board.php">';
-		echo '<input type="hidden" name="pinboard_id" value="'. $pinboard_id . '">';
 		echo '<input type="submit" value="delete">';
+		html_input_hidden_int("pinboard_id", $pinboard_id);
 		echo '</form>';
 
 	}

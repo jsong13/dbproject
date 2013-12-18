@@ -34,11 +34,12 @@
 		if ($user_id == $pinboard_user_id) {
 ?>
 	<hr>
-		<div align="center">
+	<div align="center">
 	<form method="post" action="add_pin.php">
 		add pin from web <input type="text" name="source_url">
 		<input type="submit" value="add">
-		<input type="hidden" name="pinboard_id" value="<?php echo $pinboard_id; ?>">
+		<?php html_input_hidden_int("pinboard_id", $pinboard_id) ;?>
+		<?php html_input_hidden_string("backto", "view_board.php?pinboard_id=$pinboard_id") ;?>
 	</form>
 
 	<form method="post" action="upload_pin.php"
@@ -48,7 +49,6 @@
 		<input type="submit" value="add">
 		<input type="hidden" name="pinboard_id" value="<?php echo $pinboard_id ;?>">
 	</form>
-
 	</div>
 <?php
 		
@@ -56,12 +56,20 @@
 
 
 		echo '<hr>';
-		echo '<h1 align="center">';
+		echo '<div align="center">';
+		echo '<h1>';
 		echo $pinboard_name;
 		echo "</h1>";
-		echo '<h2 align="center"> ';
+		echo '<h2> ';
 		echo 'by '. $pinboard_username;
 		echo "</h2>";
+		echo "tags: " . implode(", ", get_pinboard_tags($pinboard_id)) ;
+		echo "<br><br>";
+		echo "<form action=\"to_edit_pinboard.php\" method=\"post\">"; 
+		echo "<input type=\"submit\" name=\"edit\" value=\"edit pinboard\"/>";	
+		html_input_hidden_int("pinboard_id", $pinboard_id);
+		html_input_hidden_string("backto", "view_board.php?pinboard_id=$pinboard_id");
+		echo "</form>";
 
 
 
@@ -76,6 +84,8 @@
 			//echo '<img src="' . $row['url'] . '"/>';
 			display_pin($pin_id, "view_board.php?pinboard_id=$pinboard_id");
 		}
+
+		echo '</div>';
 
 	} catch (Exception $e) {
 		$eurl = "error.php?message=".urlencode($e->getMessage());
