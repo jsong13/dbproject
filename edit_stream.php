@@ -10,6 +10,15 @@ try {
 	$db = new DBC();
 	$con = $db->con;
 
+	// exist
+	$rs = pg_query($con, "select * from stream where stream_id = $stream_id; ");
+	$rs = pg_fetch_all($rs);
+	if ($rs == false) throw new Exception("Stream does not exist");
+
+	// owner can edit
+	if (! is_this_my_stream($stream_id, $user_id)) throw new Exception("only owner can edit");
+
+
 	if (! is_this_my_stream($stream_id, $user_id)) 
 		throw new Exception("Cannot edit other's stream!");
 

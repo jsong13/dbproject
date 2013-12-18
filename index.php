@@ -24,6 +24,7 @@
 </table>
 </form>
 <a href="register.php">Get a new account</a>
+<br>
 </div>
 
 

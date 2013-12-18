@@ -54,7 +54,7 @@ try {
 	$con = $db->con;
 	
 	if ($keyword=="") {
-		$keyword='%';
+		$keyword='';
 	} else {
 		$keyword = '%'. $keyword . '%';
 	}

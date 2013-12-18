@@ -9,8 +9,18 @@ try {
 	$db = new DBC();
 	$con = $db->con;
 
+	// exist
+	$rs = pg_query($con, "select * from pinboard where pinboard_id=$pinboard_id;");
+	$rs = pg_fetch_all($rs);
+	if ($rs == false ) throw new Exception("pinboard doesn't exist!");
 
-	// get the name
+	// owner check
+	if (! is_this_my_pinboard($pinboard_id, $user_id)) {
+		throw new Exception("Only owner can edit the board");
+	}
+		
+
+	// empty  name
 	$new_pinboard_name = trim($_POST["new_pinboard_name"]);
 	if ($new_pinboard_name == "") {
 		throw new Exception("board name can not be empty");
@@ -22,10 +32,10 @@ try {
 
 
 	// get the friend_comment_only
-	if ( in_array("true", $_POST["friend_comment_only"]) ) {
-		$new_friend_comment_only = "TRUE";	
+	if ( $_POST["friend_comment_only"] != "" ) {
+		$new_friend_comment_only = "t";	
 	} else {
-		$new_friend_comment_only = "FALSE";	
+		$new_friend_comment_only = "f";	
 	}
 
 	$rs = pg_query($con, "update pinboard set friend_comment_only='$new_friend_comment_only' 

@@ -41,8 +41,8 @@
 		echo "<td>";
 		echo "friend_comment_only: ";
 		echo "<td>";
-		echo '<input type="checkbox" name="friend_comment_only" value="true" ';
-		if (get_pinboard_attrs($pinboard_id)["friend_comment_only"]) echo 'checked';
+		echo '<input type="checkbox" name="friend_comment_only" ';
+		if (get_pinboard_attrs($pinboard_id)["friend_comment_only"]=="t") echo ' checked ';
 		echo '>';
 
 

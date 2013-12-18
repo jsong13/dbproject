@@ -105,6 +105,7 @@
 			<!--current Boards-->
 			<?php
 			foreach (get_all_pinboards() as $pinboard_id ){
+				echo '<br>';
 				echo "<input type=\"checkbox\" name=\"kept_pinboards[]\" value=$pinboard_id"; 
 				if (in_array($pinboard_id, get_following_pinboards($stream_id))) echo " checked ";
 				echo ">";

@@ -9,6 +9,13 @@ try {
 	$db = new DBC();
 	$con = $db->con;
 
+	
+	$rs = pg_query($con, "select * from pin where pin_id=$pin_id;");
+	$rs = pg_fetch_all($rs);
+	if ($rs == false) throw new Exception("Pin doesn't exist");
+	
+	if (! is_this_my_pin($pin_id, $user_id)) throw new Exception("Only owner can edit!");
+
 
 	$new_tags = array();
 	foreach ( $_POST['kept_tags'] as $tag_name) {

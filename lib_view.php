@@ -27,7 +27,7 @@
 <table>
 <tr>
 <td> <a href="browse.php">Browse</a>
-<td> My Profile
+<td> <a href="view_profile.php">My Profile</a>
 <td> <a href="view_social.php">Social</a> 
 <td> <a href="list_boards.php">My Boards </a>
 
@@ -288,7 +288,9 @@ function display_pinboard_tds($pinboard_id, $backto) {
 	echo $pinboard_user_name;
 	echo "</a>";
 	echo '<td>';
-	if ($rs[0]['friend_comment_only']) {
+
+	$fo = get_pinboard_attrs($pinboard_id)["friend_comment_only"];
+	if ($fo == "t" ) {
 		echo "friends only";
 	} else {
 		echo "everyone";

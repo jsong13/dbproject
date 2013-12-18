@@ -66,7 +66,9 @@
 		echo "tags: " . implode(", ", get_pinboard_tags($pinboard_id)) ;
 		echo "<br><br>";
 		echo "<form action=\"to_edit_pinboard.php\" method=\"post\">"; 
-		echo "<input type=\"submit\" name=\"edit\" value=\"edit pinboard\"/>";	
+		echo "<input type=\"submit\" name=\"edit\" value=\"edit pinboard\"";
+	   	if (! is_this_my_pinboard($pinboard_id, $user_id)) echo " disabled ";
+		echo	"/>";	
 		html_input_hidden_int("pinboard_id", $pinboard_id);
 		html_input_hidden_string("backto", "view_board.php?pinboard_id=$pinboard_id");
 		echo "</form>";
