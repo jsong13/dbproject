@@ -23,7 +23,10 @@
 		echo implode(", ", get_following_tags($sid));
 
 		echo "<td>" ;
-		echo implode(", ", get_following_pinboards($sid));
+		$ret = array();
+		foreach (get_following_pinboards($sid) as $pinboard_id) 
+			array_push($ret, get_pinboard_headline($pinboard_id));
+		echo implode(", ", $ret);
 
 		echo "<td>";
 		echo '<form method="post" action="delete_stream.php">';
@@ -33,7 +36,16 @@
 		echo '</form>';	
 	} 
 	echo "</table>";
+?>
+	<br><br>
+	<form action="add_stream.php" method="post">
+		<input type="text" name="stream_name" />
+		<input type="submit" value="add stream"/>
+		<?php html_input_hidden_string("backto", "list_streams.php"); ?>
+	</form>
+
+<?php
 	echo "</div>";
 
-	dispaly_footer();
+	display_footer();
 ?>

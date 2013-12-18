@@ -19,6 +19,16 @@ class DBC {
 	}
 }
 
+function is_this_my_stream($stream_id, $my_id){
+	$dbc = new DBC();
+	$con = $dbc->con;
+
+	$rs = pg_query($con, "select * from stream where 
+		user_id = $my_id and stream_id =$stream_id;");
+	$rs = pg_fetch_all($rs);
+	if ($rs == false) return false;
+	else return true;
+}
 
 function is_this_my_picture($picture_id, $my_id){
 	$dbc = new DBC();
@@ -211,9 +221,9 @@ function get_following_tags($stream_id) {
 	$dbc = new DBC();
 	$con = $dbc->con;	
 	$rs = pg_query($con, "select tag.tag_name as tag_name from tag, followtag where
-		tag.tag_id = followtag.tag_id and followtag.stream_id $stream_id; ");
+		tag.tag_id = followtag.tag_id and followtag.stream_id = $stream_id; ");
 	$ret = array();
-	while($row = pg_fetch_all($rs)) {
+	while($row = pg_fetch_assoc($rs)) {
 		array_push($ret, $row['tag_name']);
 	}
 	return $ret;
@@ -222,16 +232,44 @@ function get_following_tags($stream_id) {
 function get_following_pinboards($stream_id) {
 	$dbc = new DBC();
 	$con = $dbc->con;	
-	$rs = pg_query($con, "select pinboard.pinboard_id as pinboard_id,  
-		pinboard.pinboard_name as pinboard_name 
-		from pinboard followtag where
-		pinboard.pinboard_id = followpinboard.pinboard_id and followpinboard.stream_id $stream_id; ");
+	$rs = pg_query($con, "select   pinboard_id 
+		from followpinboard 
+		where stream_id = $stream_id; ");
 	$ret = array();
-	while($row = pg_fetch_all($rs)) {
-		array_push($ret, $row['pinboard_name']);
+	while($row = pg_fetch_assoc($rs)) {
+		array_push($ret, $row['pinboard_id']);
 	}
 	return $ret;
 }
+
+function get_pinboard_headline($pinboard_id) {
+	$dbc = new DBC();
+	$con = $dbc->con;	
+	$rs = pg_query($con, "select * from  pinboard where pinboard_id = $pinboard_id;");
+	$rs = pg_fetch_all($rs);
+	$pinboard_name = $rs[0]['pinboard_name'];
+	$pinboard_user_id = $rs[0]['user_id'];
+	$rs = pg_query($con, "select * from  useraccount where user_id = $pinboard_user_id;");
+	$rs = pg_fetch_all($rs);
+	$username = $rs[0]['username'];
+
+	$ret = "<b>$pinboard_name</b> by <i>$username</i>";
+	return $ret;
+}
+
+
+
+function get_all_pinboards() {
+	$dbc = new DBC();
+	$con = $dbc->con;	
+	$rs = pg_query($con, "select pinboard_id from pinboard; ");
+	$ret = array();
+	while($row = pg_fetch_assoc($rs)) {
+		array_push($ret, $row['pinboard_id']);
+	}
+	return $ret;
+}
+
 
 function get_all_active_tags(){
 	$dbc = new DBC();
