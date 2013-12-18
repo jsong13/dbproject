@@ -65,7 +65,7 @@ try {
 
 	$query_board_tag = "select pb.pinboard_id as ret_id from pinboard as pb, board_has_tag as bt, tag 
 			where pb.pinboard_id = bt.pinboard_id and bt.tag_id = tag.tag_id and
-			pb.pinboard_name like '$keyword' ;";
+			tag.tag_name like '$keyword' ;";
 
 	$query_board_name = "select pb.pinboard_id as ret_id from pinboard as pb 
 		where pb.pinboard_name like '$keyword' ;";

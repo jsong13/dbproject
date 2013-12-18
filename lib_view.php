@@ -34,7 +34,7 @@
 <td> <a href="list_pins.php">My Pins</a> 
 <td> <a href="search.php">Search</a>
 <td> <a href="list_streams.php">My Streams</a>
-<td> Recommends
+<td> <a href="recommend.php">Recommends</a>
 <td>
 <?php
 	$user_id = $_SESSION['user_id'];

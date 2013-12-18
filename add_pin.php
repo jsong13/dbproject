@@ -11,6 +11,7 @@ try {
 	$con = $db->con;
 	// insert into picture if not exists
 	// return a pictureid
+
 	$rs = pg_query($con, 
 		"select * from picture where source_url='$source_url' ;");
 	$rs = pg_fetch_all($rs);	
@@ -38,11 +39,17 @@ try {
 		$rs = pg_query($con, "insert into picture (source_url, url, user_id) values
 			('$source_url', '$relname', $user_id ) ; ");
 		pg_fetch_all($rs);
-	} 
+	} else {
+		$picture_id = $rs[0]['picture_id'];
+		$rs = pg_query($con, "select * from pin where user_id =$user_id and pinboard_id =$pinboard_id and picture_id = $picture_id; ");
+		if (pg_fetch_all($rs) != false) 
+			throw new Exception("picture already exisits in your pinboard");
+	}
 
 	$rs = pg_query($con, "select picture_id from picture where source_url='$source_url' ; " );
 	$picture_id = pg_fetch_all($rs)[0]["picture_id"];
 	
+
 	// insert into pin
 	$rs = pg_query($con, "insert into pin (picture_id, user_id, pinboard_id) values 
 		($picture_id, $user_id, $pinboard_id) ;");
